@@ -1,0 +1,44 @@
+{
+  "name": "ham-sandwich-webapp",
+  "version": "0.4.0",
+  "description": "sample django + nodejs + socket.io web app",
+  "scripts": {
+    "preinstall": "npm install --ignore-scripts",
+    "start" : "node node/focalnode.js"
+  },
+  "dependencies": {
+    "bl": "^1.0.0",
+    "cookie": "^0.2.3",
+    "debug": "^2.2.0",
+    "express": "^4.13.3",
+    "indexof": "0.0.1",
+    "json-stringify-safe": "^5.0.1",
+    "moment": "^2.10.6",
+    "msgpack-js": "^0.3.0",
+    "net": "^1.0.2",
+    "request": "^2.62.0",
+    "socket.io": "latest",
+    "socket.io-redis": "latest",
+    "sprintf": "^0.1.5",
+    "uid2": "0.0.3",
+    "underscore": "^1.8.3",
+    "utf-8-validate": "^1.2.1",
+    "winston": "latest"
+  },
+  "repository": {},
+  "license": "UNLICENSED",
+  "main": "index.js",
+  "devDependencies": {
+    "del": "latest",
+    "engine.io-client": "latest",
+    "glob": "latest",
+    "jasmine-core": "latest",
+    "jshint": "latest",
+    "jshint-stylish": "latest",
+    "karma": "latest",
+    "karma-chrome-launcher": "latest",
+    "karma-jasmine": "latest",
+    "run-sequence": "^1.1.5"
+  },
+  "author": "Narsys LLC"
+}
