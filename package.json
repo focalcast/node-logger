@@ -1,10 +1,10 @@
 {
-  "name": "ham-sandwich-webapp",
-  "version": "0.4.0",
-  "description": "sample django + nodejs + socket.io web app",
+  "name": "focalcast",
+  "version": "0.5.0",
+  "description": "Node.js application for relaying realtime serialized data",
   "scripts": {
     "preinstall": "npm install --ignore-scripts",
-    "start" : "node node/focalnode.js"
+    "start" : "node service.js"
   },
   "dependencies": {
     "bl": "^1.0.0",
