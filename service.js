@@ -51,7 +51,7 @@ logger = new (winston.Logger)({
         }),
         new (winston.transports.File)({
             name : 'focalnode-info',
-            filename: path.join(__dirname, '../logs/focalnode-info.log'),
+            filename: path.join(__dirname, './logs/focalnode-info.log'),
             level : 'info',
             handleExceptions : true,
             json : true,
@@ -62,14 +62,14 @@ logger = new (winston.Logger)({
         }),
         new (winston.transports.File)({
             name : 'focalnode-error',
-            filename: path.join(__dirname, '../logs/focalnode-error.log'),
+            filename: path.join(__dirname, './logs/focalnode-error.log'),
             level: 'error',
             timestamp : timestampFunction,
             handleExceptions: true
         }),
         new (winston.transports.File)({
             name : 'focalnode-debug',
-            filename : path.join(__dirname, '../logs/focalnode-debug.log'),
+            filename : path.join(__dirname, './logs/focalnode-debug.log'),
             level : 'debug',
             colorize : true,
             json: true,
@@ -78,7 +78,7 @@ logger = new (winston.Logger)({
         }),
         new (winston.transports.File)({
             name : 'focalnode-warn',
-            filename : path.join(__dirname, '../logs/focalnode-warn.log'),
+            filename : path.join(__dirname, './logs/focalnode-warn.log'),
             level : 'warn',
             timestamp : timestampFunction
         })
