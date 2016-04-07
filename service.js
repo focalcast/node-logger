@@ -184,6 +184,25 @@ function mainFunction(){
             getSession( socket.roomname ).updateSessionInfo();
         });
 
+        var FC_ERROR = {
+            ROOMNAME : {
+                UNDEFINED : 'socket_roomname_undefined',
+            }
+        };
+
+        socket.on('participant_invite_bundle', function(message){
+            try{
+                if(isUndefined(socket.roomname)){
+                    throw FOCALCAST_ERROR.ROOMNAME.UNDEFINED;
+                }
+                getSession( socket.roomname ).inviteParticipants(message);
+            }catch(err){
+                if(err === FC_ERROR.ROOMNAME.UNDEFINED){
+                    logger.error("Error adding participant bundle", err);
+                }
+            }
+        });
+
         socket.on( 'dimen_info', function(message){
             return;
         });
