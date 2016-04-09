@@ -228,6 +228,15 @@ function mainFunction(){
             return;
         });
 
+        socket.on('update_user_info', function(message){
+            try{
+            var session = getSession(socket.roomname);
+            session.updateSessionInfo();
+            }catch(err){
+                logger.error('service', 'error on update_user_info', err);
+            }
+        });
+
 
         socket.on('make_host', function(message){
 
