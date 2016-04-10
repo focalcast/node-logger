@@ -163,7 +163,7 @@ function mainFunction(){
         addSession( socket.roomname );
         socket.join( socket.roomname );
 
-        logger.debug( 'Joining room ' + socket.roomname );
+        logger.debug( 'Joining room ', socket.roomname);
         logger.debug('Socket connected', cluster.worker.id, socket.roomname);
         //Received connection from socket
         socket.emit( 'data', 'connected to worker: ' + cluster.worker.id);
