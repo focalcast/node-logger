@@ -117,8 +117,7 @@ function mainFunction(){
     io = sio(app_server);
     console.log('\n\n' + process.env.REDIS_ADDR + '\n\n');
     io.adapter(sio_redis({ host: process.env.REDIS_ADDR, port:6379 }));
-
-    //io.adapter(sio_redis({host: HOST, port: PORT}));
+        //io.adapter(sio_redis({host: HOST, port: PORT}));
     // io.on('error', function(err){
     //     console.log('io error: ' + err);
     // });
