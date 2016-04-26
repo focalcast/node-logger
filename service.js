@@ -88,7 +88,6 @@ logger = new (winston.Logger)({
 //logger = require('./mLogger.js')();
 sprintf = require('sprintf').sprintf;
 
-new slack( slack.type.connection, ' Node.js started successfully !' );
 
 logger.verbose("Host domain: " + HOST + ", Node server port: " + PORT + " , Socket server port: " + SOCKET_PORT);
 var sessions = [];
@@ -177,6 +176,17 @@ function mainFunction(){
             //logger.info(message);
             getSession( socket.roomname ).setMasterSocket(socket);
             getSession( socket.roomname ).setAuthentication(message);
+            //Slack notification, auth sent
+            try{
+                var m = JSON.parse(JSON.stringify(message)); 
+                //delete presentations from message
+                delete m.owner.presentations;
+                new slack( slack.type.session_started, JSON.stringify(m));
+            }catch(err){
+                logger.error('Error sending slack webhook for session started', err);
+                new slack( slack.type.error, 'Error sending slack webhook for session\n' + JSON.stringify(err));
+            }
+                
         });
 
         socket.on('session_updated', function(){
@@ -264,6 +274,8 @@ function mainFunction(){
             var _session = getSession(socket.roomname);
             if ( typeof _session !== 'undefined' ) {
                 _session.setPresentation( socket, message );
+                new slack(slack.type.presentation, JSON.stringify(message));
+
             } else {
                 logger.error( 'Session was undefined!' );
             }
@@ -353,6 +365,12 @@ function mainFunction(){
     });
 
     process.on('uncaughtException', function(err){
+
+        try{
+            new slack(slack.type.error, 'Uncaught exception' + JSON.stringify(err));
+        }catch(error){
+            logger.error('Error sending slack webhook for uncaught exception');
+        }
         logger.error('error', 'Fatal uncaught exception', err, function(err, level, msg, meta){ process.exit(1);
         });
     });
