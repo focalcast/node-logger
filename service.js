@@ -21,9 +21,7 @@ var request = require('request');
 var safeStringify = require( 'json-stringify-safe' );
 var _ = require( 'underscore' );
 var path = require('path');
-var winston = require('winston');
-//winston.remove(winston.transports.Console);
-winston.emitErrs = true;
+require('./lib/fcLogger.js');
 isDefined = function(query){
     if(typeof query !== 'undefined' && query !== null){
         return true;
@@ -37,59 +35,13 @@ isUndefined = function(query){
 };
 
 
-var timestampFunction = function(){
-    return new Date().toUTCString();
-};
-logger = new (winston.Logger)({
-    transports : [
-        new (winston.transports.Console)({ 
-            level: 'debug',
-            colorize : true,
-            json: false,
-            handleExceptions: true,
-            timestamp: timestampFunction
-        }),
-        new (winston.transports.File)({
-            name : 'focalnode-info',
-            filename: path.join(__dirname, './logs/focalnode-info.log'),
-            level : 'info',
-            handleExceptions : true,
-            json : true,
-            maxsize: 5242880,
-            maxFiles: 5,
-            colorize: false,
-            timestamp : timestampFunction
-        }),
-        new (winston.transports.File)({
-            name : 'focalnode-error',
-            filename: path.join(__dirname, './logs/focalnode-error.log'),
-            level: 'error',
-            timestamp : timestampFunction,
-            handleExceptions: true
-        }),
-        new (winston.transports.File)({
-            name : 'focalnode-debug',
-            filename : path.join(__dirname, './logs/focalnode-debug.log'),
-            level : 'debug',
-            colorize : true,
-            json: true,
-            handleExceptions : true,
-            timestamp : timestampFunction
-        }),
-        new (winston.transports.File)({
-            name : 'focalnode-warn',
-            filename : path.join(__dirname, './logs/focalnode-warn.log'),
-            level : 'warn',
-            timestamp : timestampFunction
-        })
-    ],
-    exitOnError: false
-});
 //logger = require('./mLogger.js')();
+
 sprintf = require('sprintf').sprintf;
 
 
 logger.verbose("Host domain: " + HOST + ", Node server port: " + PORT + " , Socket server port: " + SOCKET_PORT);
+
 var sessions = [];
 
 function addSession( roomname ) {
