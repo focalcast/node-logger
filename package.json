@@ -4,11 +4,12 @@
   "description": "Node.js application for relaying realtime serialized data",
   "scripts": {
     "preinstall": "npm install --ignore-scripts",
-    "start" : "node service.js"
+    "start": "node service.js"
   },
   "dependencies": {
     "bl": "^1.0.0",
     "cookie": "^0.2.3",
+    "cors": "^2.7.1",
     "debug": "^2.2.0",
     "express": "^4.13.3",
     "indexof": "0.0.1",
@@ -29,6 +30,7 @@
   "license": "UNLICENSED",
   "main": "index.js",
   "devDependencies": {
+    "cors": "^2.7.1",
     "del": "latest",
     "engine.io-client": "latest",
     "glob": "latest",
