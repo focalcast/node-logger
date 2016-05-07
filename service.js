@@ -21,7 +21,6 @@ var request = require('request');
 var safeStringify = require( 'json-stringify-safe' );
 var _ = require( 'underscore' );
 var path = require('path');
-var cors = require('cors');
 
 require('./lib/fcLogger.js');
 isDefined = function(query){
@@ -63,8 +62,6 @@ function getSession ( roomname ) {
 function mainFunction(){
     var http = require( 'http' );
     var app = new express();
-
-    app.use(cors());
 
     //var server = http.Server(app);
     var session = new Session();
