@@ -1,0 +1,29 @@
+{
+  "name": "create",
+  "version": "1.0.0",
+  "description": "Node Docker build",
+  "main": "gulpfile.js",
+  "repository": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "FocalCast",
+  "license": "ISC",
+  "devDependencies": {
+    "cors": "^2.7.1",
+    "gulp": "^3.9.1",
+    "gulp-chug": "^0.5.1",
+    "gulp-compass": "^2.1.0",
+    "gulp-django-utils": "^0.1.1",
+    "gulp-docker": "0.0.12",
+    "gulp-env": "^0.4.0",
+    "gulp-function": "^1.3.1",
+    "gulp-inject": "^4.0.0",
+    "gulp-param": "^1.0.3",
+    "gulp-prompt": "^0.2.0",
+    "gulp-run-sequence": "^0.3.2",
+    "gulp-shell": "^0.5.2",
+    "jshint": "latest",
+    "underscore": "^1.8.3"
+  }
+}
