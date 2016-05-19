@@ -11,7 +11,8 @@ COPY package.json /usr/src/app
 
 WORKDIR /usr/src/app
 
-COPY lib /usr/src/app
+COPY lib/ /usr/src/app/lib
+COPY logs /usr/src/app/logs
 
 EXPOSE 4000
 
