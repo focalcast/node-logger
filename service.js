@@ -21,12 +21,8 @@ var request = require('request');
 var safeStringify = require( 'json-stringify-safe' );
 var _ = require( 'underscore' );
 var path = require('path');
-var path = require('path');
-logger = require('./lib/logger');
+logger = require('./lib/logger.js');
 
-var timestampFunction = function(){
-    return new Date().toUTCString();
-};
 
 isDefined = function(query){
     if(typeof query !== 'undefined' && query !== null){
