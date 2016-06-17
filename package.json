@@ -1,40 +1,41 @@
 {
-    "name": "nodejs-docker",
-    "version": "0.5.0",
-    "description": "Node.js application for relaying realtime serialized data",
-    "scripts": {
-        "preinstall": "npm install --ignore-scripts",
-        "start": "node service.js"
-    },
-    "dependencies": {
-        "bl": "^1.0.0",
-        "cookie": "^0.2.3",
-        "cors": "^2.7.1",
-        "debug": "^2.2.0",
-        "express": "^4.13.3",
-        "indexof": "0.0.1",
-        "json-stringify-safe": "^5.0.1",
-        "moment": "^2.10.6",
-        "msgpack-js": "^0.3.0",
-        "net": "^1.0.2",
-        "request": "^2.62.0",
-        "socket.io": "latest",
-        "socket.io-redis": "latest",
-        "sprintf": "^0.1.5",
-        "uid2": "0.0.3",
-        "underscore": "^1.8.3",
-        "utf-8-validate": "^1.2.1",
-        "winston": "latest"
-    },
-    "repository": {},
-    "license": "UNLICENSED",
-    "main": "index.js",
-    "devDependencies": {
-        "del": "latest",
-        "engine.io-client": "latest",
-        "glob": "latest",
-        "jshint": "latest",
-        "jshint-stylish": "latest"
-    },
-    "author": "Narsys LLC"
+  "name": "nodejs-docker",
+  "version": "0.5.0",
+  "description": "Node.js application for relaying realtime serialized data",
+  "scripts": {
+    "preinstall": "npm install --ignore-scripts",
+    "start": "node service.js"
+  },
+  "dependencies": {
+    "bl": "^1.0.0",
+    "cookie": "^0.2.3",
+    "cors": "^2.7.1",
+    "debug": "^2.2.0",
+    "express": "^4.13.3",
+    "indexof": "0.0.1",
+    "json-stringify-safe": "^5.0.1",
+    "moment": "^2.10.6",
+    "msgpack-js": "^0.3.0",
+    "net": "^1.0.2",
+    "request": "^2.62.0",
+    "socket.io": "latest",
+    "socket.io-redis": "latest",
+    "sprintf": "^0.1.5",
+    "uid2": "0.0.3",
+    "underscore": "^1.8.3",
+    "utf-8-validate": "^1.2.1",
+    "winston": "latest"
+  },
+  "repository": {},
+  "license": "UNLICENSED",
+  "main": "index.js",
+  "devDependencies": {
+    "del": "latest",
+    "engine.io-client": "latest",
+    "glob": "latest",
+    "jshint": "latest",
+    "jshint-stylish": "latest",
+    "karma": "^0.13.22"
+  },
+  "author": "Narsys LLC"
 }
