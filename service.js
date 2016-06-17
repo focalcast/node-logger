@@ -15,7 +15,6 @@ var VERBOSE = false;
 var sio_redis = require("socket.io-redis");
 var sio = require('socket.io');
 var net = require('net');
-var paths = require('./lib/paths.js');
 var slack = require('./lib/slackwebhook.js');
 var request = require('request');
 var safeStringify = require( 'json-stringify-safe' );
