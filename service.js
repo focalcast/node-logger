@@ -132,7 +132,7 @@ function mainFunction(){
             getSession( socket.roomname ).setAuthentication(message);
             //Slack notification, auth sent
             try{
-                var m = JSON.parse(JSON.stringify(message)); 
+                var m = JSON.parse(JSON.stringify(message));
                 //delete presentations from message
                 delete m.owner.presentations;
                 new slack( slack.type.session_started, JSON.stringify(m));
@@ -140,7 +140,11 @@ function mainFunction(){
                 logger.error('Error sending slack webhook for session started', err);
                 new slack( slack.type.error, 'Error sending slack webhook for session\n' + JSON.stringify(err));
             }
-                
+
+        });
+
+        socket.on('focalcast_pexip', function(message){
+            getSession( socket.roomname ).emit('focalcast_pexip', message);
         });
 
         socket.on('session_updated', function(){
@@ -167,7 +171,7 @@ function mainFunction(){
                 socket.join(jsonObj.identity);
             }
 
-        });               
+        });
 
         socket.on( 'disconnect', function(reason){
             getSession(socket.roomname).removeParticipant(socket);
@@ -262,7 +266,7 @@ function mainFunction(){
 
 
         socket.on('set_verbosity', function(bool){
-            VERBOSE = bool; 
+            VERBOSE = bool;
         });
 
         socket.on('debug_please', function(){
@@ -337,7 +341,7 @@ if(cluster.isMaster){
         worker = cluster.fork();
 
     };
-    spawn(); 
+    spawn();
     cluster.on( 'fork', function( worker ) {
         if(worker.id === 1){
             logger.error('NodeStarted');
