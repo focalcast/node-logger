@@ -147,6 +147,10 @@ function mainFunction(){
             getSession( socket.roomname ).emit('focalcast_pexip', message);
         });
 
+        socket.on('get_focalcast_pexip_status', function(){
+            getSession(socket.roomname).retrieveFocalcastToggleState(socket);
+        })
+
         socket.on('session_updated', function(){
             getSession( socket.roomname ).updateSessionInfo();
         });
