@@ -1,3 +1,4 @@
 *.swp
 processes
 logs
+node_modules
