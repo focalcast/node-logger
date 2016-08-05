@@ -1,4 +1,5 @@
+.*.swp
+*.swp
+logs/*.log
 .DS_Store
 node_modules/*
-logs/*.log
-*.swp

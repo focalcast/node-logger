@@ -15,66 +15,13 @@ var VERBOSE = false;
 var sio_redis = require("socket.io-redis");
 var sio = require('socket.io');
 var net = require('net');
-var paths = require('./lib/paths.js');
 var slack = require('./lib/slackwebhook.js');
 var request = require('request');
 var safeStringify = require( 'json-stringify-safe' );
 var _ = require( 'underscore' );
 var path = require('path');
-var winston = require('winston');
-var path = require('path');
+logger = require('./lib/logger.js');
 
-var timestampFunction = function(){
-    return new Date().toUTCString();
-};
-
-logger = new (winston.Logger)({
-    transports : [
-        new (winston.transports.Console)({ 
-            level: 'debug',
-            colorize : true,
-            json: false,
-            handleExceptions: true,
-            timestamp: timestampFunction
-        }),
-        new (winston.transports.File)({
-            name : 'focalnode-info',
-            filename: path.join(__dirname, './logs/focalnode-info.log'),
-            level : 'info',
-            handleExceptions : true,
-            json : true,
-            maxsize: 5242880,
-            maxFiles: 5,
-            colorize: false,
-            timestamp : timestampFunction
-        }),
-        new (winston.transports.File)({
-            name : 'focalnode-error',
-            filename: path.join(__dirname, './logs/focalnode-error.log'),
-            level: 'error',
-            timestamp : timestampFunction,
-            handleExceptions: true
-        }),
-        new (winston.transports.File)({
-            name : 'focalnode-debug',
-            filename : path.join(__dirname, './logs/focalnode-debug.log'),
-            level : 'debug',
-            colorize : true,
-            json: true,
-            handleExceptions : true,
-            timestamp : timestampFunction
-        }),
-        new (winston.transports.File)({
-            name : 'focalnode-warn',
-            filename : path.join(__dirname, './logs/focalnode-warn.log'),
-            level : 'warn',
-            timestamp : timestampFunction
-        })
-    ],
-    exitOnError: false
-});
-
-winston.emitErrs = true;
 
 isDefined = function(query){
     if(typeof query !== 'undefined' && query !== null){
@@ -121,6 +68,7 @@ function mainFunction(){
 
     var app_server = app.listen(0, 'localhost');
     io = sio(app_server);
+    //io.set('origins', '*');
     console.log('\n\n' + process.env.REDIS_ADDR + '\n\n');
     io.adapter(sio_redis({ host: process.env.REDIS_ADDR, port:6379 }));
         //io.adapter(sio_redis({host: HOST, port: PORT}));
@@ -185,7 +133,7 @@ function mainFunction(){
             getSession( socket.roomname ).setAuthentication(message);
             //Slack notification, auth sent
             try{
-                var m = JSON.parse(JSON.stringify(message)); 
+                var m = JSON.parse(JSON.stringify(message));
                 //delete presentations from message
                 delete m.owner.presentations;
                 new slack( slack.type.session_started, JSON.stringify(m));
@@ -193,8 +141,16 @@ function mainFunction(){
                 logger.error('Error sending slack webhook for session started', err);
                 new slack( slack.type.error, 'Error sending slack webhook for session\n' + JSON.stringify(err));
             }
-                
+
         });
+
+        socket.on('focalcast_pexip', function(message){
+            getSession( socket.roomname ).emit('focalcast_pexip', message);
+        });
+
+        socket.on('get_focalcast_pexip_status', function(){
+            getSession(socket.roomname).retrieveFocalcastToggleState(socket);
+        })
 
         socket.on('session_updated', function(){
             getSession( socket.roomname ).updateSessionInfo();
@@ -220,7 +176,7 @@ function mainFunction(){
                 socket.join(jsonObj.identity);
             }
 
-        });               
+        });
 
         socket.on( 'disconnect', function(reason){
             getSession(socket.roomname).removeParticipant(socket);
@@ -315,7 +271,7 @@ function mainFunction(){
 
 
         socket.on('set_verbosity', function(bool){
-            VERBOSE = bool; 
+            VERBOSE = bool;
         });
 
         socket.on('debug_please', function(){
@@ -390,7 +346,7 @@ if(cluster.isMaster){
         worker = cluster.fork();
 
     };
-    spawn(); 
+    spawn();
     cluster.on( 'fork', function( worker ) {
         if(worker.id === 1){
             logger.error('NodeStarted');
