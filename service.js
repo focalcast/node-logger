@@ -68,6 +68,7 @@ function mainFunction(){
 
     var app_server = app.listen(0, 'localhost');
     io = sio(app_server);
+    //io.set('origins', '*');
     console.log('\n\n' + process.env.REDIS_ADDR + '\n\n');
     io.adapter(sio_redis({ host: process.env.REDIS_ADDR, port:6379 }));
         //io.adapter(sio_redis({host: HOST, port: PORT}));
