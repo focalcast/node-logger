@@ -144,6 +144,10 @@ function mainFunction(){
 
         });
 
+        socket.on('token_renew', function(token){
+            getSession(socket.roomname).setToken(token);
+        });
+
         socket.on('focalcast_pexip', function(message){
             getSession( socket.roomname ).emit('focalcast_pexip', message);
         });
@@ -244,8 +248,8 @@ function mainFunction(){
             }
 
         });
-        socket.on('get_slide', function(message){
-            socket.emit('annotations', getSession(socket.roomname).annotations);
+        socket.on('retrieve_annotations', function(message){
+            getSession(socket.roomname).retrieveSlideAnnotations(socket);
             return;
         });
 
