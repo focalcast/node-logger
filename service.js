@@ -23,6 +23,26 @@ var _ = require('underscore');
 var path = require('path');
 logger = require('./lib/logger.js');
 
+var _m = require('./lib/metrics.js');
+var initMetrics = _m.init;
+Metrics = _m.Metrics;
+
+initMetrics({
+    host: 'localhost',
+    prefix: 'node.',
+    flushIntervalSeconds: 5,
+    apiKey: '16d2db3031ea44d9a6eca7b2502f858d',
+    appKey: '16d2db3031ea44d9a6eca7b2502f858d'
+});
+
+var metrics = new Metrics('service');
+
+logger.debug(metrics.prefix);
+
+metrics.gauge('suh', 100);
+
+
+
 
 isDefined = function(query) {
     if(typeof query !== 'undefined' && query !== null) {
@@ -43,6 +63,28 @@ isUndefined = function(query) {
 sprintf = require('sprintf').sprintf;
 
 var sessions = [];
+var participantLogger;
+
+function logParticipantCount() {
+    logger.error('logParticipantCOunt');
+    if(typeof participantLogger === 'undefined') {
+        var getTotalParticipants = function(){
+            var totalParticipants = 0;
+            logger.info('session length' + sessions.length);
+            for(var session in sessions) {
+                totalParticipants += sessions[session].participants.get().length;
+            }
+            return totalParticipants;
+        }
+        participantLogger = setInterval(function() {
+            var totalParticipants = getTotalParticipants();
+            logger.debug('Total participants', totalParticipants);
+            metrics.gauge('users_total', totalParticipants);
+        }, 5000);
+    }
+}
+
+
 
 function addSession(roomname) {
     var session = _.findWhere(sessions, {
@@ -56,6 +98,7 @@ function addSession(roomname) {
         sessions.push(s);
     }
 }
+
 
 function getSession(roomname) {
     return _.findWhere(sessions, {
@@ -116,12 +159,9 @@ function mainFunction() {
                     sessions.push(new Session(obj[res]));
                 }
             }
-
             socketFunction(redis_adapter);
         });
     });
-
-
 }
 
 function socketFunction(redis_adapter) {
@@ -143,7 +183,6 @@ function socketFunction(redis_adapter) {
 
         if(handshakeData.headers.cookie) {
             logger.debug('cookie');
-
             //If we want to check for cookies we can do that here
             return next(null, true);
         }
@@ -153,6 +192,9 @@ function socketFunction(redis_adapter) {
             return next(null, true);
         }
     });
+
+
+
 
     io.on('error', function(err) {
         logger.error("Socket error: " + err.stack);
@@ -429,6 +471,7 @@ if(cluster.isMaster) {
 
     cluster.on('disconnect', function(worker) {
         logger.error('Worker ', worker.id, ' disconnected.', 'Forking new cluster');
+        metrics.increment('error.process_crashed');
         setTimeout(function() {
             spawn();
         }, 750);
@@ -456,13 +499,20 @@ if(cluster.isMaster) {
     }).listen(8080);
 }
 else {
+    logParticipantCount();
+    function collectMemoryStats() {
+        var memUsage = process.memoryUsage();
+        metrics.gauge('memory.rss', memUsage.rss);
+        metrics.gauge('memory.heapTotal', memUsage.heapTotal);
+        metrics.gauge('memory.heapUsed', memUsage.heapUsed);
 
+    };
+    setInterval(collectMemoryStats, 5000);
     var domain = require('domain');
     var d = domain.create();
     d.run(mainFunction);
     d.on('error', function(err) {
         logger.error('There was an error: ' + err.stack);
         cluster.worker.disconnect();
-
     });
 }
