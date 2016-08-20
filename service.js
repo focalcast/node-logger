@@ -1,5 +1,6 @@
 HOST = process.env.FOCALCAST_HOST;
 PORT = process.env.FOCALCAST_PORT_SERVER;
+SITE_URL = process.env.SITE_URL;
 SOCKET_PORT = process.env.FOCALCAST_PORT_SOCKET;
 GET_PRESENTATION_ADDRESS = 'api/presentation/get';
 ADDRESS = 'present';
@@ -26,9 +27,12 @@ logger = require('./lib/logger.js');
 var _m = require('./lib/metrics.js');
 var initMetrics = _m.init;
 Metrics = _m.Metrics;
-
+if(SITE_URL === ''){
+    SITE_URL = 'undefined.host';
+}
+    
 initMetrics({
-    host: 'localhost',
+    host: SITE_URL,
     prefix: 'node.',
     flushIntervalSeconds: 5,
     apiKey: '16d2db3031ea44d9a6eca7b2502f858d',
