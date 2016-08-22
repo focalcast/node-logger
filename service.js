@@ -30,22 +30,16 @@ Metrics = _m.Metrics;
 if(SITE_URL === ''){
     SITE_URL = 'undefined.host';
 }
-    
+
 initMetrics({
     host: SITE_URL,
     prefix: 'node.',
-    flushIntervalSeconds: 5,
+    flushIntervalSeconds: 10,
     apiKey: '16d2db3031ea44d9a6eca7b2502f858d',
     appKey: '16d2db3031ea44d9a6eca7b2502f858d'
 });
 
 var metrics = new Metrics('service');
-
-logger.debug(metrics.prefix);
-
-metrics.gauge('suh', 100);
-
-
 
 
 isDefined = function(query) {
@@ -70,11 +64,9 @@ var sessions = [];
 var participantLogger;
 
 function logParticipantCount() {
-    logger.error('logParticipantCOunt');
     if(typeof participantLogger === 'undefined') {
         var getTotalParticipants = function(){
             var totalParticipants = 0;
-            logger.info('session length' + sessions.length);
             for(var session in sessions) {
                 totalParticipants += sessions[session].participants.get().length;
             }
@@ -82,7 +74,6 @@ function logParticipantCount() {
         }
         participantLogger = setInterval(function() {
             var totalParticipants = getTotalParticipants();
-            logger.debug('Total participants', totalParticipants);
             metrics.gauge('users_total', totalParticipants);
         }, 5000);
     }
@@ -95,7 +86,6 @@ function addSession(roomname) {
         'roomname': roomname
     });
     if(typeof session === 'undefined') {
-        logger.debug('roomname', roomname);
         var s = new Session(roomname);
         redisPub.hset('sessions', s.getHash(), roomname);
         s.retrieveSession();
@@ -140,6 +130,7 @@ function mainFunction() {
     });
     ioPub.on('error', function(err) {
         logger.error('Redis Error', 'Pub Client', err);
+        metrics.increment('error.io.redis.pub');
     });
 
     var ioSub = redis(6379, process.env.REDIS_ADDR, {
@@ -147,6 +138,8 @@ function mainFunction() {
     });
     ioSub.on('error', function(err) {
         logger.error('Redis Error', 'Sub Client', err);
+        metrics.increment('error.io.redis.sub');
+
     });
     var redis_adapter = adapter({
         pubClient: ioPub,
@@ -157,6 +150,7 @@ function mainFunction() {
         redisPub.hgetall('sessions', function(err, obj) {
             if(err) {
                 logger.error('Error retrieving sessions');
+                metrics.increment('error.io.redis.pub.get-sessions');
             }
             else {
                 for(var res in obj) {
@@ -176,7 +170,6 @@ function socketFunction(redis_adapter) {
     io = sio(app_server);
     //Uncomment to remove origin headers
     //io.set('origins', '*');
-    console.log('\n\n' + process.env.REDIS_ADDR + '\n\n');
 
     io.adapter(redis_adapter);
 
@@ -208,7 +201,6 @@ function socketFunction(redis_adapter) {
         addSession(socket.roomname);
         socket.join(socket.roomname);
 
-        logger.debug('Joining room ', socket.roomname);
         logger.debug('Socket connected', cluster.worker.id, socket.roomname);
         //Received connection from socket
         socket.emit('data', 'connected to worker: ' + cluster.worker.id);
@@ -259,10 +251,6 @@ function socketFunction(redis_adapter) {
             }
         };
 
-        socket.on('dimen_info', function(message) {
-            return;
-        });
-
         socket.on('error', function(err) {
             logger.error('socket error:' + err.stack);
         });
@@ -284,8 +272,8 @@ function socketFunction(redis_adapter) {
         });
 
         socket.on('end_presentation', function(message) {
-            socket.session().users.userArray = [];
-            session = new Session();
+            //socket.session().users.userArray = [];
+            //session = new Session();
         });
 
         socket.on('add_user', function(data) {
@@ -361,7 +349,7 @@ function socketFunction(redis_adapter) {
                 _session.annotationsDirty = true;
                 _session.updateSessionInfo();
                 _session.emit('set_slide', message);
-                logger.debug('Setting slide :' + message, 'Session:', socket.roomname);
+                logger.debug('Setting slide: ' + message, 'Session:', socket.roomname);
             }
             else {
                 logger.debug('Session was undefined');
@@ -376,7 +364,7 @@ function socketFunction(redis_adapter) {
 
         socket.on('debug_please', function() {
             var fs = require('fs');
-            fs.readFile('/opt/python/node/log/watch.log', 'utf8', function(err, data) {
+            fs.readFile('./logs/focalnode-debug.log', 'utf8', function(err, data) {
                 if(err) {
                     socket.emit('debug_info', err);
                 }
@@ -395,12 +383,12 @@ function socketFunction(redis_adapter) {
 
         socket.on('path', function(message) {
             getSession(socket.roomname).addAnnotation(message);
-            //request('/api/v1/session/' +session.id+'/presentation/');
-            //io.sockets.in( socket.roomname ).emit('end_path', message);
         });
+
         socket.on('undo', function() {
             getSession(socket.roomname).undoAnnotation();
         });
+        
         socket.on('clear', function() {
             getSession(socket.roomname).clearAnnotations();
         });
@@ -425,6 +413,7 @@ function socketFunction(redis_adapter) {
             catch(err) {
                 new slack(slack.type.error, "Connection error : " + err);
                 logger.error(err.stack);
+                metrics.increment('error.io.connection-error');
             }
         }
     });
@@ -437,6 +426,8 @@ function socketFunction(redis_adapter) {
             logger.error('Error sending slack webhook for uncaught exception');
         }
         logger.error('error', 'Fatal uncaught exception', err, function(err, level, msg, meta) {
+            metrics.increment('error.fatal.uncaught-exception');
+
             process.exit(1);
         });
     });
@@ -475,7 +466,7 @@ if(cluster.isMaster) {
 
     cluster.on('disconnect', function(worker) {
         logger.error('Worker ', worker.id, ' disconnected.', 'Forking new cluster');
-        metrics.increment('error.process_crashed');
+        metrics.increment('error.worker.disconnected');
         setTimeout(function() {
             spawn();
         }, 750);
