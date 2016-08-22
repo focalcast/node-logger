@@ -15,10 +15,10 @@ COPY lib/ /usr/src/app/lib
 COPY logs /usr/src/app/logs
 
 RUN rm -rf /usr/src/app/logs/*
-RUN touch /user/src/app/logs/focalnode-debug.logs
-RUN touch /user/src/app/logs/focalnode-error.logs
-RUN touch /user/src/app/logs/focalnode-info.logs
-RUN touch /user/src/app/logs/focalnode-warn.logs
+RUN touch /usr/src/app/logs/focalnode-debug.log
+RUN touch /usr/src/app/logs/focalnode-error.log
+RUN touch /usr/src/app/logs/focalnode-info.log
+RUN touch /usr/src/app/logs/focalnode-warn.log
 
 
 
