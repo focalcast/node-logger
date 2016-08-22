@@ -357,6 +357,11 @@ function socketFunction(redis_adapter) {
 
         });
 
+        socket.on('participant_disconnect', function(participant){
+            logger.info('Participant disconnect event', participant);
+            getSession(socket.roomname).removeParticipant(socket, participant);
+        });
+
 
         socket.on('set_verbosity', function(bool) {
             VERBOSE = bool;
@@ -388,7 +393,7 @@ function socketFunction(redis_adapter) {
         socket.on('undo', function() {
             getSession(socket.roomname).undoAnnotation();
         });
-        
+
         socket.on('clear', function() {
             getSession(socket.roomname).clearAnnotations();
         });
