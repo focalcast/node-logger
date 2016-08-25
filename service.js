@@ -27,7 +27,7 @@ logger = require('./lib/logger.js');
 var _m = require('./lib/metrics.js');
 var initMetrics = _m.init;
 Metrics = _m.Metrics;
-if(SITE_URL === ''){
+if(SITE_URL === '') {
     SITE_URL = 'undefined.host';
 }
 
@@ -65,7 +65,7 @@ var participantLogger;
 
 function logParticipantCount() {
     if(typeof participantLogger === 'undefined') {
-        var getTotalParticipants = function(){
+        var getTotalParticipants = function() {
             var totalParticipants = 0;
             for(var session in sessions) {
                 totalParticipants += sessions[session].participants.get().length;
@@ -209,6 +209,16 @@ function socketFunction(redis_adapter) {
             // logger.debug('Got message: ' + message);
             socket.broadcast.to(socket.roomname).emit('incomming', message);
         });
+
+        socket.emit('pexip::is_screenshare_enabled', getSession(socket.roomname).screenShareEnabled);
+
+        socket.on('pexip::set_screenshare', function(enabled) {
+            if(typeof enabled === 'boolean') {
+                getSession(socket.roomname).screenShareEnabled = enabled;
+            }
+            io.sockets.in(socket.roomname).emit('pexip::is_screenshare_enabled', getSession(socket.roomname).screenShareEnabled);
+        });
+
 
         socket.on('auth', function(message) {
             //logger.info('Got auth');
@@ -357,7 +367,7 @@ function socketFunction(redis_adapter) {
 
         });
 
-        socket.on('participant_disconnect', function(participant){
+        socket.on('participant_disconnect', function(participant) {
             logger.info('Participant disconnect event', participant);
             getSession(socket.roomname).removeParticipant(socket, participant);
         });
@@ -500,6 +510,7 @@ if(cluster.isMaster) {
 }
 else {
     logParticipantCount();
+
     function collectMemoryStats() {
         var memUsage = process.memoryUsage();
         metrics.gauge('memory.rss', memUsage.rss);
