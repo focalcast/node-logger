@@ -274,6 +274,7 @@ function socketFunction(redis_adapter) {
         });
 
         socket.on('disconnect', function(reason) {
+            logger.info('disconnect called.');
             getSession(socket.roomname).removeParticipant(socket);
             return;
         });
@@ -341,7 +342,7 @@ function socketFunction(redis_adapter) {
             }
 
         });
-        
+
         socket.on('retrieve_annotations', function(message) {
             getSession(socket.roomname).retrieveSlideAnnotations(socket);
             return;
