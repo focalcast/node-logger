@@ -314,6 +314,11 @@ function socketFunction(redis_adapter) {
 
         });
 
+        socket.on('host_ended_session', function(message){
+            logger.debug('host_ended_session', message);
+            getSession(socket.roomname).endSession(socket);
+        });
+
         socket.on('connected_event', function(message) {
             //io.sockets.in( socket.roomname ).emit( 'user_array', socket.session().users.getParticipantList());
 
