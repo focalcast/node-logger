@@ -71,7 +71,7 @@ function logParticipantCount() {
                 totalParticipants += sessions[session].participants.get().length;
             }
             return totalParticipants;
-        }
+        };
         participantLogger = setInterval(function() {
             var totalParticipants = getTotalParticipants();
             metrics.gauge('users_total', totalParticipants);
@@ -249,7 +249,7 @@ function socketFunction(redis_adapter) {
 
         socket.on('get_focalcast_pexip_status', function() {
             getSession(socket.roomname).retrieveFocalcastToggleState(socket);
-        })
+        });
 
         socket.on('session_updated', function() {
             getSession(socket.roomname).updateSessionInfo();
@@ -513,12 +513,11 @@ if(cluster.isMaster) {
 else {
     logParticipantCount();
 
-    function collectMemoryStats() {
+    var collectMemoryStats = function() {
         var memUsage = process.memoryUsage();
         metrics.gauge('memory.rss', memUsage.rss);
         metrics.gauge('memory.heapTotal', memUsage.heapTotal);
         metrics.gauge('memory.heapUsed', memUsage.heapUsed);
-
     };
     setInterval(collectMemoryStats, 5000);
     var domain = require('domain');
