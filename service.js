@@ -71,7 +71,7 @@ function logParticipantCount() {
                 totalParticipants += sessions[session].participants.get().length;
             }
             return totalParticipants;
-        }
+        };
         participantLogger = setInterval(function() {
             var totalParticipants = getTotalParticipants();
             metrics.gauge('users_total', totalParticipants);
@@ -249,7 +249,7 @@ function socketFunction(redis_adapter) {
 
         socket.on('get_focalcast_pexip_status', function() {
             getSession(socket.roomname).retrieveFocalcastToggleState(socket);
-        })
+        });
 
         socket.on('session_updated', function() {
             getSession(socket.roomname).updateSessionInfo();
@@ -274,6 +274,7 @@ function socketFunction(redis_adapter) {
         });
 
         socket.on('disconnect', function(reason) {
+            logger.info('disconnect called.');
             getSession(socket.roomname).removeParticipant(socket);
             return;
         });
@@ -313,6 +314,11 @@ function socketFunction(redis_adapter) {
 
         });
 
+        socket.on('host_ended_session', function(message){
+            logger.debug('host_ended_session', message);
+            getSession(socket.roomname).endSession(socket);
+        });
+
         socket.on('connected_event', function(message) {
             //io.sockets.in( socket.roomname ).emit( 'user_array', socket.session().users.getParticipantList());
 
@@ -341,6 +347,7 @@ function socketFunction(redis_adapter) {
             }
 
         });
+
         socket.on('retrieve_annotations', function(message) {
             getSession(socket.roomname).retrieveSlideAnnotations(socket);
             return;
@@ -511,12 +518,11 @@ if(cluster.isMaster) {
 else {
     logParticipantCount();
 
-    function collectMemoryStats() {
+    var collectMemoryStats = function() {
         var memUsage = process.memoryUsage();
         metrics.gauge('memory.rss', memUsage.rss);
         metrics.gauge('memory.heapTotal', memUsage.heapTotal);
         metrics.gauge('memory.heapUsed', memUsage.heapUsed);
-
     };
     setInterval(collectMemoryStats, 5000);
     var domain = require('domain');
