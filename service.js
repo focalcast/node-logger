@@ -349,6 +349,7 @@ function socketFunction(redis_adapter) {
         });
 
         socket.on('retrieve_annotations', function(message) {
+            logger.debug('Retrieving annotations');
             getSession(socket.roomname).retrieveSlideAnnotations(socket);
             return;
         });
@@ -363,7 +364,7 @@ function socketFunction(redis_adapter) {
         socket.on('force_slide', function(message) {
             var _session = getSession(socket.roomname);
             if(typeof _session !== 'undefined') {
-                _session.annotationsDirty = true;
+                // _session.annotationsDirty = true;
                 _session.updateSessionInfo();
                 _session.emit('set_slide', message);
                 logger.debug('Setting slide: ' + message, 'Session:', socket.roomname);
