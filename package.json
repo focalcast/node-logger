@@ -4,7 +4,7 @@
   "description": "Node.js application for relaying realtime serialized data",
   "scripts": {
     "preinstall": "npm install --ignore-scripts",
-    "start": "node service.js"
+    "start": "node lib/app.js"
   },
   "dependencies": {
     "array-union": "^1.0.2",
