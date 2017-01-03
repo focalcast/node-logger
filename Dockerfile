@@ -1,4 +1,4 @@
-FROM node:argon
+FROM node:boron
 
 RUN mkdir -p /usr/src/app
 
