@@ -1,6 +1,7 @@
 .*.swp
 *.swp
 .DS_Store
+videos/*
 node_modules/**
 logs/*.log
 npm-debug.log
