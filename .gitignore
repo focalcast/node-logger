@@ -1,5 +1,9 @@
+.idea/*
 .*.swp
 *.swp
-logs/*.log
 .DS_Store
-node_modules/*
+videos/*
+node_modules/**
+logs/*.log
+npm-debug.log
+videos/*

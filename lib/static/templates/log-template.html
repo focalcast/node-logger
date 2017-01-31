@@ -1,0 +1,88 @@
+<div style="display:block">
+<div class="btn-group row"
+        data-toggle="buttons"
+        role="group">
+        <label class="btn active"
+            ng-class="$ctrl.filteredLevels.debug ? 'btn-primary' : 'btn-secondary'">
+            <input type="checkbox"
+                ng-model="$ctrl.filteredLevels.debug"
+                data-toggle="button"
+                aria-pressed="true"
+                checked
+                autocomplete="off">Debug</input>
+                </label>
+
+                <label class="btn active"
+                    ng-class="$ctrl.filteredLevels.info ? 'btn-success' : 'btn-secondary'">
+
+                    <input type="checkbox"
+                        ng-model="$ctrl.filteredLevels.info"
+                        data-toggle="button"
+                        aria-pressed="true"
+                        checked
+                        autocomplete="off">Info</input>
+                        </label>
+
+                        <label class="btn active"
+                            ng-class="$ctrl.filteredLevels.warn ? 'btn-warning' : 'btn-secondary'">
+                            <input type="checkbox"
+                                ng-model="$ctrl.filteredLevels.warn"
+                                data-toggle="button"
+                                aria-pressed="true"
+                                checked
+                                autocomplete="off">Warn</input>
+                                </label>
+
+                                <label class="btn active"
+                                    ng-class="$ctrl.filteredLevels.error ? 'btn-danger' : 'btn-secondary'">
+                                    <input type="checkbox"
+                                        ng-model="$ctrl.filteredLevels.error"
+                                        data-toggle="button"
+                                        aria-pressed="true"
+                                        checked
+                                        autocomplete="off">Error</input>
+                                        </label>
+</div>
+</div>
+
+<div class="btn-group"
+    data-toggle="buttons"
+    role="group">
+<label class="btn"
+    ng-class="$ctrl.showSession ? 'btn-primary' : 'btn-secondary'">
+    <input ng-model="$ctrl.showSession"
+        type="checkbox"
+        data-toggle="button"
+        aria-pressed="false"
+        autocomplete="off">Show session id
+    </input>
+</label>
+<label>Filter</label>
+<input ng-model="$ctrl.search.message"
+    type="text">
+</input>
+
+</div>
+    <div ng-click="$ctrl.selectedSession = ''" ng-if="$ctrl.selectedSession !== ''">
+        <label>{{$ctrl.selectedSession}}</label>
+    </div>
+    <table class="table">
+        <thead>
+            <tr class="row" style="margin-left:5px">
+                <th>Level</th>
+                <th ng-if="$ctrl.selectedSession === '' && $ctrl.showSession">Session</th>
+                <th>Message</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="row" style="margin-left: 5px;" ng-repeat="line in $ctrl.log | filter:$ctrl.filter"
+                ng-hide="$ctrl.showSession && line.session === ''">
+                <td style="text-align: center;">
+                    <div class="badge"
+                    ng-class="{'badge-primary' : line.level === 'debug', 'badge-success' : line.level === 'info', 'badge-warning': line.level === 'warn', 'badge-danger' : line.level === 'error'}">{{line.level}} </div>
+                </td>
+                <td ng-if="$ctrl.selectedSession === '' && $ctrl.showSession" ng-click="$ctrl.selectedSession = line.session">{{line.session}}</td>
+                <td> {{line.message}}</td>
+            </tr>
+    </table>
+</div>
