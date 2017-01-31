@@ -4,13 +4,16 @@
   "description": "Node.js application for relaying realtime serialized data",
   "scripts": {
     "preinstall": "npm install --ignore-scripts",
-    "start": "node lib/app.js"
+    "start": "node lib/app.js",
+    "debug": "node --debug lib/app.js",
+    "iron": "iron-node lib/app.js"
   },
   "dependencies": {
     "array-union": "^1.0.2",
     "array-uniq": "^1.0.3",
     "async": "^2.0.0-rc.6",
     "aws4": "^1.5.0",
+    "basic-auth": "^1.1.0",
     "bl": "^1.0.0",
     "body-parser": "^1.16.0",
     "canvas": "^1.6.2",
