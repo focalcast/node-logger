@@ -68,6 +68,7 @@
   "license": "UNLICENSED",
   "main": "index.js",
   "devDependencies": {
+    "basic-auth": "^1.1.0",
     "del": "latest",
     "engine.io-client": "latest",
     "glob": "latest",
