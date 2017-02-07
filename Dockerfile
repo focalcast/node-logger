@@ -31,6 +31,7 @@ RUN mkdir -p /opt/app && cp -a /tmp/node_modules /usr/src/app/
 
 RUN mkdir /usr/src/app/videos
 ENV VIDEO_DIR /usr/src/app/videos/
+ENV APP_DIR /usr/src/app/
 
 EXPOSE 4000
 
