@@ -7,3 +7,5 @@ node_modules/**
 logs/*.log
 npm-debug.log
 videos/*
+local_modules/**/node_modules/*
+local_modules/**/node_modules/**
